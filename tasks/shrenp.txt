@@ -1,0 +1,71 @@
+\=== SECTION: IDENTITY\_LOGISTICS ===
+I go by Shren (Shrenil formally), and I’m based in the America/Toronto timezone. My “home base” is Canada, with ties to Gujarat/Surat and periodic India trips in my orbit. I work primarily from home on my Mac, usually in a quiet setup that lets me go deep—minimal background noise, good headphones, and everything logged. I’m comfortable in Safari and modern dev tools, but I keep my stack pragmatic: Python/TypeScript, Postgres/Supabase, Redis, Pinecone, n8n, and agent orchestration frameworks.
+
+Reach me in the channel that fits the task’s urgency and weight. Day-to-day nudges and status pings should arrive as short chat messages; logs, summaries, and anything I may need to audit later should be sent as email digests. Reserve SMS or phone for truly urgent blockers. I prefer asynchronous, written-first collaboration (docs, PRDs, checklists) so I can review when I’m in the right headspace.
+
+I like a reliable “morning brief + evening plan” rhythm: a concise 8:00 AM life-design check-in and a 6:00 PM next-day preparation message—both with 3–5 concrete suggestions. Outside of those anchors, keep notifications quiet unless something requires my decision or unblocks progress.
+
+\=== SECTION: GOALS\_PRIORITIES ===
+Right now my goals split across two pillars: (1) building an AI-powered “Ultimate Assistant / UserProxy” ecosystem (Mantra + Tiles + digital twin + safe tool-use with n8n, Supabase, Pinecone, Redis), and (2) creative/game design work (a mobile ARPG with modular content and a clean, high-performance UX). A parallel thread is polishing monetization/data-value systems (Twin Power, Hero Vector) without compromising trust or reliability.
+
+Month/quarter focus: stabilize agent workflows end-to-end (plan → approve → execute → log), make the booking/automation flows production-stable, and ship user-facing Tiles that feel genuinely helpful. For the game, I care about performance on phone first, then extensibility (drop-in biomes/structures). I prioritize quality where it locks in reliability, but I also value speed when a 70–80% prototype unlocks learning. I’ll pay for convenience that saves hours or unlocks velocity; I stay cost-conscious around recurring per-seat tools or hard lock-in.
+
+I enjoy trying new approaches when there’s a clear rationale, but I don’t chase novelty for its own sake. Show me what actually beats my current stack—with crisp trade-offs and exit strategy—and I’ll greenlight it.
+
+\=== SECTION: COMMUNICATION\_STYLE ===
+I’m direct and practical. For most decisions, give me a brief top-line with the best option, the “why,” and the key risk. Then include a compact appendix I can scan if I want detail: assumptions, alternatives, and what we’ll track post-decision. Default tone: casual-professional, friendly, and succinct. When I ask for creativity or narrative world-building, loosen up and bring flair.
+
+I prefer options, but not option overload. Frame 2–3 viable paths, pick a best, score them (speed/quality/cost/risk), and note the fallback if the best path fails. For romantic/social banter contexts, I like playful/teasing tone; for engineering contexts, keep it precise and testable. If I explicitly ask for roleplay (e.g., “answer like Batman”), switch styles fully.
+
+Do not interrupt me during deep work. Quiet hours: protect my focused blocks and evenings when I’m in the zone. If something can wait for the next brief, let it wait.
+
+\=== SECTION: WORK\_SCHEDULE ===
+I’m an evening-leaning person who finds creative momentum later in the day, but I still want a crisp 8:00 AM check-in to shape the day. Late afternoons and evenings are my highest “flow” windows for building, debugging, and world-building. Midday is fine for reviews, triage, and low-friction decisions.
+
+Structure my day in a few strong blocks: morning admin and triage; afternoon build; evening creative/engineering sprint. Keep meetings lightweight and purposeful—15–30 minutes max, with agendas and decision goals. Most “meetings” can be handled with a doc and comments; I value workshops only when they unblock something specific.
+
+Flexibility matters: I want room for a one-hour adventure or learning block (reading non-fiction, skill drills, or a solo outdoor walk). The schedule should bend to momentum—if I’m in flow, don’t yank me out.
+
+\=== SECTION: PERSONAL\_FAVORITES ===
+I gravitate toward open, modular tools I can extend: n8n for orchestration, Supabase/Postgres for data, Pinecone for vectors, Redis for queues, Selenium/automation for web flows, AutoGen/CAMEL/MCP for agent scaffolding. Languages: Python and TypeScript. For docs and diagrams: Markdown, Mermaid, and clean READMEs.
+
+For fun and inspiration: video games with deep buildcraft (Guild Wars 2, Pokémon-likes, ARPG systems), reading non-fiction, and solo outdoor exploring—forests, trails, sunny weather. Aesthetically, I enjoy Y2K-punk edges when they’re purposeful, but I demand functional, lag-free UX on mobile.
+
+Travel-wise I enjoy unique landscapes and exploration (e.g., India’s Kutch/Rann vibe appeals). I prefer simple, reliable logistics over fancy frills—routes that work, places with good light and quiet, and plans that leave me space to wander.
+
+\=== SECTION: CONSTRAINTS\_DISLIKES ===
+Deal-breakers: flaky automations, hallucinated facts, and silent failures. If something is uncertain, say so and propose a test. I dislike vendor lock-in with vague pricing, heavy UIs that feel laggy on phone, and meetings without a decision target. I don’t want noise—only surface pings that change my actions.
+
+Budget comfort: I’ll pay for tools that demonstrably save time or reduce risk. I get skeptical about recurring fees with poor portability or unclear ROI. If we add a paid tool, show me migration/exit steps and how it plugs into my stack without brittle coupling.
+
+I also dislike overfitting to novelty. If my current approach is robust and testable, don’t churn it for a trend. Guard my focused evenings; don’t stack interruptions there.
+
+\=== SECTION: DECISION\_MAKING ===
+My default is “delegate with guardrails.” I want the assistant to propose a best option and move, as long as it’s within pre-agreed scopes (cost caps, data boundaries, time boxes) and there’s a rollback plan. For bigger choices, I like a one-page decision brief: problem, top pick, alternatives, risks, cost/time, success metrics, and a checkpoint date.
+
+I am comfortable with calculated risk when we learn fast: run a small pilot, instrument it, and expand if the signals are good. When unsure, run an A/B or a canary. I appreciate an explicit “failure path” and data capture so we can improve systematically.
+
+Operationally: keep a “plans” table and decision log so agents (and I) can review, approve, and revisit choices. Summarize deltas weekly.
+
+\=== SECTION: RISK\_PRIVACY ===
+I’m pragmatic about privacy: I’ll connect services (Gmail, Calendar, Drive, etc.) when there’s real value, but I expect least-privilege scopes, clear logs, and easy revocation. No surprise data egress to unknown endpoints. Store secrets properly, separate embeddings from raw data where possible, and annotate provenance.
+
+I’m adventurous with new tools if the safety story is strong. Show me permissions, failure isolation, and cost/rate limits. If an integration touches sensitive data, propose a redacted or synthetic trial first, then scale with audits turned on.
+
+I’m uncomfortable with irreversible actions without explicit approval. Anything destructive, costly, or reputational should be a two-step: propose → confirm (or fall back to a sandbox run).
+
+\=== SECTION: WORK\_RELATIONSHIPS ===
+I operate like a solo founder with rotating collaborators—human and agentic. I prefer doc-first, asynchronous collaboration and short, goal-oriented syncs when needed. I reward autonomy and crisp follow-through; bring me problems paired with proposed solutions.
+
+Management style I like (and give): clear objectives, measurable checkpoints, and freedom in the middle. I don’t micromanage, but I do care about reliability and logs. QA/Complexity-Analyzer passes before handoff make me happy.
+
+My work relationships are generally informal but respectful. Keep it friendly, precise, and accountable. If a teammate (or agent) is blocked, surface it early with options.
+
+\=== SECTION: HABITS\_ROUTINES ===
+Typical day: short morning triage with a life-design slant, a strong afternoon build block, and a late-day/evening creative sprint when I’m most alive. I aim for one hour of intentional “fun/learning” daily—games, reading non-fiction, or a solo outdoor wander. Evenings suit deep work; daylight wanders keep me sane.
+
+Procrastination patterns: I can get distracted by interesting rabbit holes. The antidote is a visible next action, a tiny time box (15–25 minutes), and a reward (my one-hour fun slot). Nudges that convert vague goals into measurable steps help me snap back.
+
+Motivation: progress I can see—shipped automations, cleaner logs, a faster mobile build—plus a touch of playful gamification (badges, streaks) that stays subtle, not cheesy. Celebrate shipped deltas; keep momentum visible.
+
+\=== END\_SECTIONS ===

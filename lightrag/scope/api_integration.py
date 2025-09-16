@@ -52,7 +52,7 @@ def create_scope_aware_api_app(
     app = FastAPI(
         title="LightRAG with Scope Support",
         description="Enhanced LightRAG API with hierarchical scope-based data partitioning",
-        version="1.4.8.2-scope"
+        version="1.4.9"
     )
 
     # Add CORS middleware
@@ -73,7 +73,7 @@ def create_scope_aware_api_app(
         return {
             "status": "healthy",
             "scope_support": True,
-            "version": "1.4.8.2-scope"
+            "version": "1.4.9"
         }
 
     logger.info("Created scope-aware FastAPI application")

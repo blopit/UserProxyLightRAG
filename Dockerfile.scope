@@ -99,7 +99,7 @@ CMD ["/app/start.sh"]
 # Labels for metadata
 LABEL org.opencontainers.image.title="LightRAG with Scope Support" \
       org.opencontainers.image.description="Enhanced LightRAG with hierarchical scope-based data partitioning" \
-      org.opencontainers.image.version="1.4.8.2-scope" \
+      org.opencontainers.image.version="1.4.9" \
       org.opencontainers.image.vendor="LightRAG Community" \
       org.opencontainers.image.url="https://github.com/HKUDS/LightRAG" \
       org.opencontainers.image.documentation="https://github.com/HKUDS/LightRAG/blob/main/README.md" \
