@@ -227,6 +227,64 @@ export type AuthStatusResponse = {
   webui_description?: string
 }
 
+// Scope-related types
+export type SRNComponents = {
+  version: string
+  workspace: string
+  subject_type: string
+  subject_id: string
+  project?: string
+  thread?: string
+  topic?: string
+}
+
+export type ScopeContext = {
+  srn: string
+  components: SRNComponents
+  depth: number
+}
+
+export type ScopeValidationResponse = {
+  valid: boolean
+  components?: SRNComponents
+  error?: string
+}
+
+export type ScopeListResponse = {
+  scopes: ScopeContext[]
+  total_count: number
+}
+
+export type ScopeAwareQueryRequest = {
+  query: string
+  scope?: string
+  mode?: string
+  only_need_context?: boolean
+  response_type?: string
+}
+
+export type ScopeAwareQueryResponse = {
+  response: string
+  scope_context?: string
+  metadata?: Record<string, any>
+}
+
+export type MigrationPlan = {
+  source_workspace: string
+  target_scope: string
+  estimated_items: number
+  storage_types: string[]
+  estimated_time: string
+  validation_results: Record<string, any>
+}
+
+export type MigrationResponse = {
+  migration_id: string
+  status: string
+  message: string
+  plan?: MigrationPlan
+}
+
 export type PipelineStatusResponse = {
   autoscanned: boolean
   busy: boolean
@@ -761,5 +819,124 @@ export const getDocumentsPaginated = async (request: DocumentsRequest): Promise<
  */
 export const getDocumentStatusCounts = async (): Promise<StatusCountsResponse> => {
   const response = await axiosInstance.get('/documents/status_counts')
+  return response.data
+}
+
+// Scope-related API functions
+
+/**
+ * Validate an SRN string
+ * @param srn The SRN string to validate
+ * @returns Promise with validation response
+ */
+export const validateSRN = async (srn: string): Promise<ScopeValidationResponse> => {
+  const response = await axiosInstance.post('/scopes/validate', { srn })
+  return response.data
+}
+
+/**
+ * Parse an SRN string into components
+ * @param srn The SRN string to parse
+ * @returns Promise with parsed components
+ */
+export const parseSRN = async (srn: string): Promise<{ components: SRNComponents; scope_context: ScopeContext }> => {
+  const response = await axiosInstance.post('/scopes/parse', { srn })
+  return response.data
+}
+
+/**
+ * List available scopes with optional filtering
+ * @param workspace Optional workspace filter
+ * @param subjectType Optional subject type filter
+ * @param pattern Optional pattern filter
+ * @param limit Maximum number of results
+ * @returns Promise with scope list
+ */
+export const listScopes = async (
+  workspace?: string,
+  subjectType?: string,
+  pattern?: string,
+  limit: number = 100
+): Promise<ScopeListResponse> => {
+  const request = {
+    workspace,
+    subject_type: subjectType,
+    pattern,
+    limit
+  }
+  const response = await axiosInstance.post('/scopes/list', request)
+  return response.data
+}
+
+/**
+ * Query with scope awareness
+ * @param request The scope-aware query request
+ * @returns Promise with scope-aware response
+ */
+export const queryScopeAware = async (request: ScopeAwareQueryRequest): Promise<ScopeAwareQueryResponse> => {
+  const response = await axiosInstance.post('/query/scope_aware', request)
+  return response.data
+}
+
+/**
+ * Insert text with scope context
+ * @param text The text to insert
+ * @param scope Optional scope context
+ * @returns Promise with insertion response
+ */
+export const insertTextWithScope = async (text: string, scope?: string): Promise<DocActionResponse> => {
+  const response = await axiosInstance.post('/insert/scope_aware', { text, scope })
+  return response.data
+}
+
+/**
+ * Validate a migration plan
+ * @param workspace Source workspace to migrate from
+ * @param targetScope Target scope to migrate to
+ * @returns Promise with migration validation
+ */
+export const validateMigration = async (workspace: string, targetScope: string): Promise<MigrationPlan> => {
+  const response = await axiosInstance.post('/scopes/migrations/validate', {
+    source_workspace: workspace,
+    target_scope: targetScope
+  })
+  return response.data
+}
+
+/**
+ * Start a migration from workspace to scope
+ * @param workspace Source workspace
+ * @param targetScope Target scope
+ * @param options Migration options
+ * @returns Promise with migration response
+ */
+export const startMigration = async (
+  workspace: string,
+  targetScope: string,
+  options: {
+    subjectType?: string
+    subjectId?: string
+    dryRun?: boolean
+    batchSize?: number
+  } = {}
+): Promise<MigrationResponse> => {
+  const response = await axiosInstance.post('/scopes/migrations/migrate', {
+    source_workspace: workspace,
+    target_scope: targetScope,
+    subject_type: options.subjectType || 'user',
+    subject_id: options.subjectId || 'migrated',
+    dry_run: options.dryRun || false,
+    batch_size: options.batchSize || 1000
+  })
+  return response.data
+}
+
+/**
+ * Get migration status
+ * @param migrationId The migration ID
+ * @returns Promise with migration status
+ */
+export const getMigrationStatus = async (migrationId: string): Promise<MigrationResponse> => {
+  const response = await axiosInstance.get(`/scopes/migrations/${encodeURIComponent(migrationId)}`)
   return response.data
 }

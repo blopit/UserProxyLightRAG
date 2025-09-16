@@ -2,13 +2,14 @@ import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { throttle } from '@/lib/utils'
-import { queryText, queryTextStream } from '@/api/lightrag'
+import { queryText, queryTextStream, queryScopeAware } from '@/api/lightrag'
 import { errorMessage } from '@/lib/utils'
 import { useSettingsStore } from '@/stores/settings'
 import { useDebounce } from '@/hooks/useDebounce'
 import QuerySettings from '@/components/retrieval/QuerySettings'
 import { ChatMessage, MessageWithError } from '@/components/retrieval/ChatMessage'
-import { EraserIcon, SendIcon } from 'lucide-react'
+import ScopeSelector from '@/components/ScopeSelector'
+import { EraserIcon, SendIcon, Scope } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { QueryMode } from '@/api/lightrag'
 
@@ -56,6 +57,8 @@ export default function RetrievalTesting() {
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [inputError, setInputError] = useState('') // Error message for input
+  const [selectedScope, setSelectedScope] = useState('') // Current scope context
+  const [useScopeAware, setUseScopeAware] = useState(false) // Toggle for scope-aware queries
   // Reference to track if we should follow scroll during streaming (using ref for synchronous updates)
   const shouldFollowScrollRef = useRef(true)
   const thinkingStartTime = useRef<number | null>(null)
@@ -269,21 +272,39 @@ export default function RetrievalTesting() {
       }
 
       try {
-        // Run query
-        if (state.querySettings.stream) {
-          let errorMessage = ''
-          await queryTextStream(queryParams, updateAssistantMessage, (error) => {
-            errorMessage += error
-          })
-          if (errorMessage) {
-            if (assistantMessage.content) {
-              errorMessage = assistantMessage.content + '\n' + errorMessage
-            }
-            updateAssistantMessage(errorMessage, true)
+        // Run query - choose between scope-aware and traditional query
+        if (useScopeAware && selectedScope) {
+          // Use scope-aware query
+          const scopeParams = {
+            query: actualQuery,
+            scope: selectedScope,
+            mode: modeOverride || state.querySettings.mode || 'hybrid',
+            only_need_context: state.querySettings.only_need_context || false,
+            response_type: state.querySettings.response_type || 'simple'
+          }
+          const response = await queryScopeAware(scopeParams)
+          updateAssistantMessage(response.response)
+          // Add scope context to the assistant message if available
+          if (response.scope_context) {
+            assistantMessage.scopeContext = response.scope_context
           }
         } else {
-          const response = await queryText(queryParams)
-          updateAssistantMessage(response.response)
+          // Use traditional query
+          if (state.querySettings.stream) {
+            let errorMessage = ''
+            await queryTextStream(queryParams, updateAssistantMessage, (error) => {
+              errorMessage += error
+            })
+            if (errorMessage) {
+              if (assistantMessage.content) {
+                errorMessage = assistantMessage.content + '\n' + errorMessage
+              }
+              updateAssistantMessage(errorMessage, true)
+            }
+          } else {
+            const response = await queryText(queryParams)
+            updateAssistantMessage(response.response)
+          }
         }
       } catch (err) {
         // Handle error
@@ -318,7 +339,7 @@ export default function RetrievalTesting() {
         }
       }
     },
-    [inputValue, isLoading, messages, setMessages, t, scrollToBottom]
+    [inputValue, isLoading, messages, setMessages, t, scrollToBottom, useScopeAware, selectedScope]
   )
 
   // Add event listeners to detect when user manually interacts with the container
@@ -439,6 +460,40 @@ export default function RetrievalTesting() {
               <div ref={messagesEndRef} className="pb-1" />
             </div>
           </div>
+        </div>
+
+        {/* Scope selector section */}
+        <div className="shrink-0 space-y-2 p-3 bg-gray-50 rounded-lg border">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Scope className="h-4 w-4" />
+              <span className="text-sm font-medium">Scope-Aware Query</span>
+            </div>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={useScopeAware}
+                onChange={(e) => setUseScopeAware(e.target.checked)}
+                className="rounded"
+              />
+              <span className="text-xs">Enable</span>
+            </label>
+          </div>
+          {useScopeAware && (
+            <ScopeSelector
+              value={selectedScope}
+              onChange={setSelectedScope}
+              placeholder="Enter scope (e.g., 1.abc123...def.user.alice.proj_research)"
+              showValidation={true}
+              allowEmpty={false}
+              className="w-full"
+            />
+          )}
+          {useScopeAware && selectedScope && (
+            <div className="text-xs text-green-600 bg-green-50 p-2 rounded">
+              ✓ Queries will be filtered to scope: {selectedScope.split('.').slice(-3).join('.')}
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="flex shrink-0 items-center gap-2">

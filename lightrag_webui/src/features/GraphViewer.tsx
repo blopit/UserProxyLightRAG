@@ -24,6 +24,7 @@ import LegendButton from '@/components/graph/LegendButton'
 import { useSettingsStore } from '@/stores/settings'
 import { useGraphStore } from '@/stores/graph'
 import { labelColorDarkTheme, labelColorLightTheme } from '@/lib/constants'
+import ScopeSelector from '@/components/ScopeSelector'
 
 import '@react-sigma/core/lib/style.css'
 import '@react-sigma/graph-search/lib/style.css'
@@ -109,6 +110,8 @@ const GraphEvents = () => {
 
 const GraphViewer = () => {
   const [sigmaSettings, setSigmaSettings] = useState<Partial<SigmaSettings>>({})
+  const [scopeFilter, setScopeFilter] = useState('')
+  const [showScopeFilter, setShowScopeFilter] = useState(false)
   const sigmaRef = useRef<any>(null)
 
   const selectedNode = useGraphStore.use.selectedNode()
@@ -186,15 +189,45 @@ const GraphViewer = () => {
 
         <FocusOnNode node={autoFocusedNode} move={moveToSelectedNode} />
 
-        <div className="absolute top-2 left-2 flex items-start gap-2">
-          <GraphLabels />
-          {showNodeSearchBar && (
-            <GraphSearch
-              value={searchInitSelectedNode}
-              onFocus={onSearchFocus}
-              onChange={onSearchSelect}
-            />
-          )}
+        <div className="absolute top-2 left-2 flex flex-col items-start gap-2">
+          <div className="flex items-start gap-2">
+            <GraphLabels />
+            {showNodeSearchBar && (
+              <GraphSearch
+                value={searchInitSelectedNode}
+                onFocus={onSearchFocus}
+                onChange={onSearchSelect}
+              />
+            )}
+          </div>
+
+          {/* Scope filter section */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowScopeFilter(!showScopeFilter)}
+              className="px-2 py-1 text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 rounded border"
+              title="Toggle scope filter"
+            >
+              🔍 Scope Filter
+            </button>
+            {showScopeFilter && (
+              <div className="bg-white/90 backdrop-blur p-2 rounded border shadow-lg">
+                <ScopeSelector
+                  value={scopeFilter}
+                  onChange={setScopeFilter}
+                  placeholder="Filter by scope..."
+                  showValidation={false}
+                  allowEmpty={true}
+                  className="w-80"
+                />
+                {scopeFilter && (
+                  <div className="mt-1 text-xs text-green-600">
+                    Filtering graph by scope: {scopeFilter.split('.').slice(-2).join('.')}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="bg-background/60 absolute bottom-2 left-2 flex flex-col rounded-xl border-2 backdrop-blur-lg">
