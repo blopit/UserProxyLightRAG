@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Badge } from '@/components/ui/Badge'
+import Button from '@/components/ui/Button'
+import Input from '@/components/ui/Input'
+import Badge from '@/components/ui/Badge'
 import { Alert, AlertDescription } from '@/components/ui/Alert'
-import { Progress } from '@/components/ui/Progress'
+import Progress from '@/components/ui/Progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs'
 import ScopeSelector from '@/components/ScopeSelector'
 import {
@@ -27,7 +27,7 @@ import {
   AlertTriangle,
   Database,
   Users,
-  Project,
+  Folder,
   MessageSquare,
   Tag
 } from 'lucide-react'

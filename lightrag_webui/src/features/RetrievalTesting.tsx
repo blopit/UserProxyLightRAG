@@ -9,7 +9,7 @@ import { useDebounce } from '@/hooks/useDebounce'
 import QuerySettings from '@/components/retrieval/QuerySettings'
 import { ChatMessage, MessageWithError } from '@/components/retrieval/ChatMessage'
 import ScopeSelector from '@/components/ScopeSelector'
-import { EraserIcon, SendIcon, Scope } from 'lucide-react'
+import { EraserIcon, SendIcon, Target } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { QueryMode } from '@/api/lightrag'
 
