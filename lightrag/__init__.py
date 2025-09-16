@@ -33,6 +33,6 @@ except ImportError:
     __all__ = ["LightRAG", "QueryParam"]
     SCOPE_SUPPORT = False
 
-__version__ = "1.4.8.2-scope"
+__version__ = "1.4.8.2+scope"
 __author__ = "Zirui Guo"
 __url__ = "https://github.com/HKUDS/LightRAG"
