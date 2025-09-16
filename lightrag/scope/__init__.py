@@ -22,6 +22,18 @@ from .storage import (
     ScopeAwareGraphStorage,
     ScopeMigrationInterface,
 )
+from .migration import ScopeMigrationTool
+
+# Import concrete implementations
+try:
+    from .implementations import ScopeAwareJsonKVStorage
+    from .postgres_impl import ScopeAwarePGKVStorage
+    from .graph_impl import ScopeAwareNetworkXStorage
+    from .lightrag_scope import ScopeAwareLightRAG
+
+    IMPLEMENTATIONS_AVAILABLE = True
+except ImportError:
+    IMPLEMENTATIONS_AVAILABLE = False
 
 __all__ = [
     "SRNError",
@@ -41,4 +53,14 @@ __all__ = [
     "ScopeAwareVectorStorage",
     "ScopeAwareGraphStorage",
     "ScopeMigrationInterface",
+    "ScopeMigrationTool",
 ]
+
+# Add concrete implementations to exports if available
+if IMPLEMENTATIONS_AVAILABLE:
+    __all__.extend([
+        "ScopeAwareJsonKVStorage",
+        "ScopeAwarePGKVStorage",
+        "ScopeAwareNetworkXStorage",
+        "ScopeAwareLightRAG",
+    ])

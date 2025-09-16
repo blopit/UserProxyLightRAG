@@ -1,0 +1,107 @@
+# Production Dockerfile for LightRAG with Scope Support
+FROM python:3.9-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /app
+
+# Copy requirements first for better Docker layer caching
+COPY requirements.txt .
+COPY pyproject.toml .
+COPY setup.py .
+
+# Install Python dependencies
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt && \
+    pip install -e .
+
+# Copy application code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p /app/data /app/logs /app/config
+
+# Set up configuration
+ENV WORKING_DIR=/app/data \
+    LOG_DIR=/app/logs \
+    CONFIG_DIR=/app/config
+
+# Scope system configuration
+ENV SCOPE_ENABLE_INHERITANCE=true \
+    SCOPE_VALIDATION_STRICT=true \
+    SCOPE_MIGRATION_BATCH_SIZE=1000 \
+    SCOPE_CACHE_SIZE=10000 \
+    SCOPE_CACHE_TTL=3600
+
+# API configuration
+ENV API_HOST=0.0.0.0 \
+    API_PORT=8020 \
+    API_WORKERS=1
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8020/health || exit 1
+
+# Expose port
+EXPOSE 8020
+
+# Create startup script
+RUN cat > /app/start.sh << 'EOF'
+#!/bin/bash
+
+# Initialize logging
+echo "Starting LightRAG with Scope Support at $(date)"
+echo "Working directory: $WORKING_DIR"
+echo "Scope inheritance: $SCOPE_ENABLE_INHERITANCE"
+echo "Scope validation: $SCOPE_VALIDATION_STRICT"
+
+# Ensure data directory exists
+mkdir -p "$WORKING_DIR"
+
+# Start the application
+if [ "$API_WORKERS" -gt 1 ]; then
+    echo "Starting with $API_WORKERS workers using Gunicorn"
+    exec python -m lightrag.api.run_with_gunicorn \
+        --host "$API_HOST" \
+        --port "$API_PORT" \
+        --workers "$API_WORKERS" \
+        --worker-class uvicorn.workers.UvicornWorker
+else
+    echo "Starting with single worker using Uvicorn"
+    exec python -m lightrag.api.lightrag_server \
+        --host "$API_HOST" \
+        --port "$API_PORT"
+fi
+EOF
+
+RUN chmod +x /app/start.sh
+
+# Switch to non-root user for security
+RUN useradd --create-home --shell /bin/bash lightrag && \
+    chown -R lightrag:lightrag /app
+USER lightrag
+
+# Start the application
+CMD ["/app/start.sh"]
+
+# Labels for metadata
+LABEL org.opencontainers.image.title="LightRAG with Scope Support" \
+      org.opencontainers.image.description="Enhanced LightRAG with hierarchical scope-based data partitioning" \
+      org.opencontainers.image.version="1.4.8.2-scope" \
+      org.opencontainers.image.vendor="LightRAG Community" \
+      org.opencontainers.image.url="https://github.com/HKUDS/LightRAG" \
+      org.opencontainers.image.documentation="https://github.com/HKUDS/LightRAG/blob/main/README.md" \
+      scope.support="true" \
+      scope.version="1.0.0"
